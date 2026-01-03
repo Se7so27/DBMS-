@@ -19,11 +19,13 @@ while true; do
     echo "4. Insert Row"
     echo "5. Select From Table"
     echo "6. Alter Table (rename)"
-    echo "7. Add Column "
-    echo "8. Back to Databases Menu"
-    echo "9. Exit"
+    echo "7. Delete Row by PK"
+    echo "8. Update Cell by PK"
+    echo "9. Back to Databases Menu"
+    echo "10. Exit"
     cd  ../tables
     read -r -p "Choose : " choice
+    clear
     case $choice in
         1)
             echo "[INFO]: Create Table"
@@ -49,17 +51,24 @@ while true; do
             echo "[INFO]: Alter Table"
             . ./alter_table.sh "$DB_PATH"
             ;;
-            
         7)
-            echo "[INFO]: Add Column"
-            . ./add_column.sh "$DB_PATH"
+            echo "[INFO]: Delete Row by PK"
+            . ./delete_row_by_pk.sh "$DB_PATH"
             ;;
         8)
+            echo "[INFO]: Update Cell by PK"
+            read -r -p "Table name : " table_name
+            read -r -p "Primary Key of the row to update: " pk_value
+            . ./update_cell.sh "$DB_PATH" "$table_name" "$pk_value"
+            ;;
+
+        9)
             echo "Returning to databases menu"
-            ../dbs/main.sh
+            cd ../dbs/
+            . ./main.sh
             break
             ;;
-        9)
+        10)
             echo "Exit"
             exit 0
             ;;

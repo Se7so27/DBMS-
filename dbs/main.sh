@@ -19,22 +19,22 @@ while true; do
     case $choice in
         1)
             echo "[INFO]: Let's connect database"
-            source ./connect_db.sh "$DB_HOME"
+            . ./connect_db.sh "$DB_HOME"
             break;
             ;;
         2)
-            echo "[INFO]: Let's create database"
-            source ./create_db.sh "$DB_HOME"
+            echo "[INFO]: Let's create database";
+            . ./create_db.sh "$DB_HOME";
             break;
             ;;
         3)
-            echo "[INFO]: Let's drop database"
-            . ./drop_db.sh "$DB_HOME"
+            echo "[INFO]: Let's drop database";
+            . ./drop_db.sh "$DB_HOME";
             break;
             ;;
         4)
-            echo "[INFO]: Let's list database"
-            . ./list_db.sh "$DB_HOME"
+            echo "[INFO]: Let's list database";
+            . ./list_db.sh "$DB_HOME";
             break;
             ;;
         5)

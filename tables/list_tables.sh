@@ -7,12 +7,16 @@ if [[ -z "$db_path" || ! -d "$db_path" ]]; then
     return 1
 fi
 
-tables=$(ls -A "$db_path")
+tables=$(ls -A "$db_path"/*.data 2>/dev/null)
+
 if [[ -z "$tables" ]]; then
     echo "[LOG]: No tables"
 else
     echo "Tables in database:"
-    ls -1 "$db_path"
+    for table in "$db_path"/*.data; do
+        name="$(basename "$table" .data)"
+        echo "[-] $name"
+    done
 fi
 
 return 0
