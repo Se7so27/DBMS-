@@ -1,22 +1,31 @@
 #!/bin/bash
+# utils/valid_db_name.sh
+# Purpose: Validate database/table name according to project rules.
+# Rules enforced:
+#  - non-empty
+#  - no whitespace
+#  - not only digits
+#  - allowed characters: letters, numbers, underscore
+#  - not a reserved keyword
+#  - maximum length 62 characters
 
-db_name=$1
-db_name=${db_name,,}
+ db_name=$1
+ db_name=${db_name,,}
 
-# empty ?
-if [[ -z "$db_name" ]]; then
-    echo "[ERROR]: Database Name cannot be empty!"
-    echo "[SOURCE]: $0 <database_name>"
-    exit 1
-fi
+ # empty ?
+ if [[ -z "$db_name" ]]; then
+     echo "[ERROR]: Database Name cannot be empty!"
+     echo "[SOURCE]: $0 <database_name>"
+     exit 1
+ fi
 
-# no spaces
-echo "$db_name"
-if [[ "$db_name" =~ [[:space:]] ]]; then
-    echo "[ERROR]: Database Name cannot contain space!"
-    echo "[SOURCE]: $0 <database_name>"
-    exit 1
-fi
+ # no spaces
+ echo "$db_name"
+ if [[ "$db_name" =~ [[:space:]] ]]; then
+     echo "[ERROR]: Database Name cannot contain space!"
+     echo "[SOURCE]: $0 <database_name>"
+     exit 1
+ fi
 
 # only numbers
 if [[ "$db_name" =~ ^[0-9]+$ ]]; then

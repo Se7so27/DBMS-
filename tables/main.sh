@@ -1,15 +1,26 @@
 #!/bin/bash
+# tables/main.sh
+# Purpose: Manage tables within a connected database. This script expects a
+# database name as the first parameter and then presents an interactive
+# menu for table operations (create/drop/list/insert/select/alter/delete/update).
+# Parameters:
+#   $1 - DB_NAME : the name of the database to operate on (must exist under DB_HOME)
+# Notes:
+# - DB_HOME is set to $HOME/DATABASES by convention
+# - The script delegates work to per-table scripts inside the 'tables' folder
+
 DB_HOME="$HOME/DATABASES"
 
 DB_NAME="$1"
 DB_PATH="$DB_HOME/$DB_NAME"
 
+# Validate that a database name was provided and exists
 if [[ -z "$DB_NAME" || ! -d "$DB_PATH" ]]; then
     echo "[ERROR]: Database not provided or does not exist. Please connect to a database first."
     exit 1
 fi
 
-
+# Main interactive loop: show menu and dispatch to helper scripts in tables/
 while true; do
     echo "============ MANIPULATING TABLES (Database: ${DB_NAME}) =============="
 
@@ -23,6 +34,8 @@ while true; do
     echo "8. Update Cell by PK"
     echo "9. Back to Databases Menu"
     echo "10. Exit"
+
+    # Move into the tables directory where helper scripts are located
     cd  ../tables
     read -r -p "Choose : " choice
     clear
@@ -48,6 +61,9 @@ while true; do
             . ./select_table.sh "$DB_PATH"
             ;;
         6)
+            # NOTE: Menu numbering and case labels may be slightly out-of-sync in
+            # the original code (this branch runs the delete-by-PK script). Keep
+            # behavior unchanged but document it here.
             echo "[INFO]: Delete Row by PK"
             . ./delete_row_by_pk.sh "$DB_PATH"
             ;;

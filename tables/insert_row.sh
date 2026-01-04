@@ -1,6 +1,13 @@
 #!/bin/bash
 
-# Insert row into table (.data) - validates field count against meta
+# tables/insert_row.sh
+# Purpose: Insert a colon-separated row into a table's .data file. Validates
+# that the number of fields matches the table's .meta file and enforces primary
+# key constraints (non-empty and uniqueness) when defined.
+# Parameters:
+#   $1 - db_path : path to the database directory
+
+# Note: Rows are stored colon-separated and column order must match .meta file
 
 db_path=$1
 
@@ -20,28 +27,28 @@ fi
 
 # expected fields = number of meta lines
 expected=$(wc -l < "$meta_file" | tr -d ' ')
-# find PK index (if any)
+# find PK index (if any) and its name
 pk_idx=$(awk -F: '$3=="PK" {print NR; exit}' "$meta_file")
 pk_name=$(awk -F: '$3=="PK" {print $1; exit}' "$meta_file")
 
 while true; do
     read -r -p "Enter row (colon-separated): " row
 
-    # Build regex dynamically
+    # Build regex dynamically to ensure there are exactly 'expected' colon-separated fields
     regex="^[^:]+"
     for ((i=1; i<$expected; i++)); do
         regex+="(:[^:]+)"
     done
     regex+="$"
 
-    # Validate
+    # Validate basic format using the constructed regex
     if [[ ! "$row" =~ $regex ]]; then
         echo "[ERROR]: Invalid format. Expected $expected fields separated by single colons."
         continue
     fi
 
-# Safe to split
-IFS=':' read -ra fields <<< "$row"
+    # Split into fields safely
+    IFS=':' read -ra fields <<< "$row"
 
     if [[ ${#fields[@]} -ne $expected ]]; then
         echo "[ERROR]: Expected $expected fields (based on table metadata). You provided ${#fields[@]}. Try again."
@@ -55,14 +62,14 @@ IFS=':' read -ra fields <<< "$row"
             echo "[ERROR]: Primary key '${pk_name}' cannot be empty"
             continue
         fi
-        # check for duplicate PK value
+        # check for duplicate PK value using awk; returns success if found
         if awk -F: -v id="$pk_value" '$1==id {found=1} END{exit !found}' "$data_file"; then
             echo "[ERROR]: Duplicate primary key value '${pk_value}' for '${pk_name}'"
             continue
         fi
     fi
 
-    # append row
+    # append row to data file
     echo "$row" >> "$data_file"
     echo "[INFO]: Row inserted into '${table_name,,}'"
     continue_prompt=""
@@ -70,9 +77,9 @@ IFS=':' read -ra fields <<< "$row"
     if [[ ! "$continue_prompt" =~ ^[Yy]$ ]]; then
         break
     fi
-    
+
 done
-# sort data file by PK if applicable
+# sort data file by PK (first column) if applicable to keep rows ordered
 if [[ -n "$pk_idx" ]]; then
     sort -n -t: -k1,1 "$data_file" -o "$data_file"
 fi

@@ -1,8 +1,14 @@
 #!/bin/bash
+# tables/create_table.sh
+# Purpose: Interactively create a new table inside the provided database directory.
+# Files created:
+#  - <table>.data  : stores colon-separated rows (data)
+#  - <table>.meta  : stores column definitions, one per line in the format:
+#                   <column_name>:<type>[:PK]
+#                   where type is 'int' or 'string', and ':PK' marks the primary key
+# Usage: ./create_table.sh <db_path>
 
-# Create table with data (.data) + metadata (.meta)
-# Usage: ./create_table.sh <dp_path>
-
+# Path to the database directory (where .data/.meta files are stored)
 dp_path=$1
 
 if [[ -z "$dp_path" || ! -d "$dp_path" ]]; then
@@ -21,6 +27,7 @@ while true; do
     break
 done
 
+# Build .data and .meta file paths (normalize to lowercase)
 data_file="$dp_path/${tb_name,,}.data"
 meta_file="$dp_path/${tb_name,,}.meta"
 
@@ -38,12 +45,13 @@ while true; do
     fi
     # validate column name
     ../utils/valid_db_name.sh "$col_name" || { echo "Invalid column name: $col_name"; continue; }
-    # check duplicate
+    # ensure the same column has not already been defined in the meta file
     if grep -q "^$col_name:" "$meta_file"; then
         echo "Column '$col_name' already defined"
         continue
     fi
 
+    # Read and validate column type
     read -r -p "Column data type (int/string): " col_type
     col_type=${col_type,,}
     if [[ "$col_type" != "int" && "$col_type" != "string" ]]; then
@@ -51,6 +59,7 @@ while true; do
         continue
     fi
 
+    # Optionally designate the first chosen column as the primary key (PK)
     if [[ "$flag_pk_chosen" == "false" ]]; then
         read -r -p "Do you want this column to be (PK) [y/N]: " pk_choice
         if [[ "$pk_choice" =~ ^[Yy]$ ]]; then
@@ -65,6 +74,7 @@ while true; do
     cols_count=$((cols_count+1))
 done
 
+# If no columns were defined, remove created files and abort
 if [[ $cols_count -eq 0 ]]; then
     rm -f "$data_file" "$meta_file"
     echo "[ERROR]: No columns defined. Table creation aborted."

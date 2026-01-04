@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# Delete row(s) from a table by primary key
-# Usage: . ./delete_row_by_pk.sh <db_path>
-
-db_path=$1
+# tables/delete_row_by_pk.sh
+# Purpose: Delete row(s) by primary key from a table's .data file.
+# Parameters:
+#   $1 - db_path : path to the database directory
+# Notes:
+# - Uses awk to detect whether the PK exists and sed to remove matching lines in-place
 
 if [[ -z "$db_path" || ! -d "$db_path" ]]; then
     echo "[ERROR]: Database path is invalid or not provided"

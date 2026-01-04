@@ -1,7 +1,14 @@
 #!/bin/bash
+# dbs/main.sh - Database menu entrypoint
+# Purpose:
+# - Define the root folder for databases (DB_HOME)
+# - Ensure the directory exists
+# - Present a small menu for database-level operations and dispatch the user's choice
+# Usage: Run this script to manage databases interactively (connect/create/drop/list)
+
 DB_HOME="$HOME/DATABASES"
 
-# init root directory if it is not exist
+# Ensure the root directory for databases exists (creates it if needed)
 mkdir -p "$DB_HOME"
 
 # show database menu
