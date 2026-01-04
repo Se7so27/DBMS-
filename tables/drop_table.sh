@@ -14,6 +14,12 @@ if [[ -z "$db_path" || ! -d "$db_path" ]]; then
 fi
 
 read -r -p "Table name to drop : " table_name
+if ../utils/valid_table_name.sh "$table_name" ; then
+    table_name="${table_name,,}"
+else
+    echo "[ERROR]: Invalid table name"
+    exit 1
+fi
 if [[ -f "$db_path/${table_name,,}.data" ]]; then
     read -r -p "Are you sure you want to drop '${table_name,,}'? [y/N] " confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then

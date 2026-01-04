@@ -29,11 +29,10 @@ while true; do
     echo "3. List Tables"
     echo "4. Insert Row"
     echo "5. Select From Table"
-    echo "6. Alter Table (rename)"
-    echo "7. Delete Row by PK"
-    echo "8. Update Cell by PK"
-    echo "9. Back to Databases Menu"
-    echo "10. Exit"
+    echo "6. Delete Row by PK"
+    echo "7. Update Cell by PK"
+    echo "8. Back to Databases Menu"
+    echo "9. Exit"
 
     # Move into the tables directory where helper scripts are located
     cd  ../tables
@@ -42,42 +41,38 @@ while true; do
     case $choice in
         1)
             echo "[INFO]: Create Table"
-            . ./create_table.sh "$DB_PATH"
+            ./create_table.sh "$DB_PATH"
             ;;
         2)
             echo "[INFO]: Drop Table"
-            . ./drop_table.sh "$DB_PATH"
+            ./drop_table.sh "$DB_PATH"
             ;;
         3)
             echo "[INFO]: List Tables"
-            . ./list_tables.sh "$DB_PATH"
+            ./list_tables.sh "$DB_PATH"
             ;;
         4)
             echo "[INFO]: Insert Row"
-            . ./insert_row.sh "$DB_PATH"
+            ./insert_row.sh "$DB_PATH"
             ;;
         5)
             echo "[INFO]: Select From Table"
-            . ./select_table.sh "$DB_PATH"
+            ./select_table.sh "$DB_PATH"
             ;;
         6)
-            # NOTE: Menu numbering and case labels may be slightly out-of-sync in
-            # the original code (this branch runs the delete-by-PK script). Keep
-            # behavior unchanged but document it here.
             echo "[INFO]: Delete Row by PK"
-            . ./delete_row_by_pk.sh "$DB_PATH"
+            ./delete_row_by_pk.sh "$DB_PATH"
             ;;
         7)
             echo "[INFO]: Update Cell by PK"
-            read -r -p "Table name : " table_name
-            read -r -p "Primary Key of the row to update: " pk_value
-            . ./update_cell.sh "$DB_PATH" "$table_name" "$pk_value"
+            
+            ./update_cell.sh "$DB_PATH" 
             ;;
 
         8)
             echo "Returning to databases menu"
             cd ../dbs/
-            . ./main.sh
+            ./main.sh
             break
             ;;
         9)

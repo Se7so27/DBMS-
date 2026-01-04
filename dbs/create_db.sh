@@ -14,7 +14,7 @@
  while true; do
      read -r -p "Database name : " db_name
      # Ensure the name is valid and does not already exist
-     ../utils/valid_db_name.sh "$db_name" && !(../utils/is_exist_db.sh "$db_path" "$db_name") && break
+    . ../utils/valid_db_name.sh "$db_name" && !(. ../utils/is_exist_db.sh "$db_path" "$db_name") && break
  done
 
  # Create folder in DB_HOME/name (lowercase to keep naming consistent)
@@ -22,4 +22,4 @@
  mkdir -p "$db_path/${db_name,,}"
 
  # Return to databases menu
-./main.sh
+. ./main.sh

@@ -10,6 +10,12 @@ if [[ -z "$db_path" || ! -d "$db_path" ]]; then
 fi
 
 read -r -p "Table name : " table_name
+if ../utils/valid_table_name.sh "$table_name" ; then
+    table_name="${table_name,,}"
+else
+    echo "[ERROR]: Invalid table name"
+    exit 1
+fi
 data_file="$db_path/${table_name,,}.data"
 meta_file="$db_path/${table_name,,}.meta"
 
@@ -32,6 +38,7 @@ while true; do
     echo "1) By PK"
     echo "2) Head (first N)"
     echo "3) Tail (last N)"
+    echo "4) Create a CSV file"
     read -r -p "Choose [1-3]: " opt
     case $opt in
         1)
@@ -71,6 +78,11 @@ while true; do
             . ./top_n_records.sh "$n" "$table_name" "$db_path" tail
             break
             ;;
+        4)
+            read -r -p "Enter CSV file name: " csv_file
+            ../utils/create_csv.sh "$db_path" "$table_name" "$csv_file"
+            break
+            ;;
         *)
             echo "Please provide a valid option (1-3)"
             ;;
@@ -78,4 +90,4 @@ while true; do
 done
 
 
-return 0
+exit 0
