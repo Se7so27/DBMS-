@@ -48,27 +48,23 @@ while true; do
             . ./select_table.sh "$DB_PATH"
             ;;
         6)
-            echo "[INFO]: Alter Table"
-            . ./alter_table.sh "$DB_PATH"
-            ;;
-        7)
             echo "[INFO]: Delete Row by PK"
             . ./delete_row_by_pk.sh "$DB_PATH"
             ;;
-        8)
+        7)
             echo "[INFO]: Update Cell by PK"
             read -r -p "Table name : " table_name
             read -r -p "Primary Key of the row to update: " pk_value
             . ./update_cell.sh "$DB_PATH" "$table_name" "$pk_value"
             ;;
 
-        9)
+        8)
             echo "Returning to databases menu"
             cd ../dbs/
             . ./main.sh
             break
             ;;
-        10)
+        9)
             echo "Exit"
             exit 0
             ;;

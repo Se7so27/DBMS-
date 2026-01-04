@@ -26,7 +26,23 @@ pk_name=$(awk -F: '$3=="PK" {print $1; exit}' "$meta_file")
 
 while true; do
     read -r -p "Enter row (colon-separated): " row
-    IFS=':' read -ra fields <<< "$row"
+
+    # Build regex dynamically
+    regex="^[^:]+"
+    for ((i=1; i<$expected; i++)); do
+        regex+="(:[^:]+)"
+    done
+    regex+="$"
+
+    # Validate
+    if [[ ! "$row" =~ $regex ]]; then
+        echo "[ERROR]: Invalid format. Expected $expected fields separated by single colons."
+        continue
+    fi
+
+# Safe to split
+IFS=':' read -ra fields <<< "$row"
+
     if [[ ${#fields[@]} -ne $expected ]]; then
         echo "[ERROR]: Expected $expected fields (based on table metadata). You provided ${#fields[@]}. Try again."
         continue
